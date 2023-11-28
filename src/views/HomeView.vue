@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import GolCanvas from '@/components/GolCanvas.vue';
+import { makeGolImpl } from '@/lib/gol';
+
+const impl = makeGolImpl();
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <GolCanvas style="height: 200px;" :impl="impl" />
   </main>
 </template>
