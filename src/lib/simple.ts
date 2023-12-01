@@ -103,11 +103,11 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 					if (isAlive) {
 						if (liveNeighbors < 2
 							|| liveNeighbors > 3) {
-							delayed.push(() => this.setCell(xCopy,yCopy,false));
+							delayed.push(() => this.setCell(xCopy,yCopy,false,true));
 						}
 					} else{
 						if (liveNeighbors === 3) {
-							delayed.push(() => this.setCell(xCopy,yCopy,true));
+							delayed.push(() => this.setCell(xCopy,yCopy,true,true));
 						}
 					}
 				}
