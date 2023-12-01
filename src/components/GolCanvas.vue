@@ -16,6 +16,10 @@ const props = defineProps<{
     impl: GameOfLifeImplementation,
 }>();
 
+const emit = defineEmits<{
+    (e: "clicked", point: { x: number, y: number }): void;
+}>();
+
 const aliveColor = "#000000";
 const deadColor = "#FFFFFF";
 
@@ -171,7 +175,9 @@ function onClick(a: MouseEvent) {
     ));
     const gameX = Math.floor(point.x);
     const gameY = Math.floor(point.y);
-    const impl = props.impl;
-    impl.setCell(gameX, gameY, !impl.getCell(gameX, gameY));
+    emit('clicked', {
+        x: gameX,
+        y: gameY
+    });
 }
 </script>

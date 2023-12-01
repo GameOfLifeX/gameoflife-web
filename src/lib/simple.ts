@@ -71,7 +71,7 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 			this.field.delete(this.mapCoordinate(x,y));
 		}
 
-		if (insideTick !== true) {
+		if (insideTick == true) {
 			this.hasUpdated();
 		}
 	}
