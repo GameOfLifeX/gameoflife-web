@@ -98,7 +98,7 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 
 					if (this.getCell(x, y)) {
 						if (liveNeighbors < 2
-							|| liveNeighbors > 2) {
+							|| liveNeighbors > 3) {
 							delayed.push(() => this.setCell(x,y,false));
 						}
 					} else{
