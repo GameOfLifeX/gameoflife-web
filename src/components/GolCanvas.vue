@@ -132,12 +132,17 @@ watch([canvasRef, canvasWrapperRef], ([canvasRef, canvasWrapperRef], _, onCleanu
             onGestureEnd: () => baseTransform = transform.value,
             onGestureStart: () => baseTransform = transform.value,
             onGestureChange: (gesture) => {
-                transform.value = baseTransform
-                    .translate(-gesture.origin.x, -gesture.origin.y)
-                    .scale(gesture.scale)
-                    .rotate(gesture.rotation)
+                const boundingRect = canvasRef.getBoundingClientRect();
+                const originX  = gesture.origin.x - boundingRect.x;
+                const originY  = gesture.origin.y - boundingRect.y;
+                console.log("originX =", originX, "originY =", originY);
+                transform.value = new DOMMatrix()
+                    .translate(originX, originY)
                     .translate(gesture.translation.x, gesture.translation.y)
-                    .translate(gesture.origin.x, gesture.origin.y);
+                    .rotate(gesture.rotation)
+                    .scale(gesture.scale)
+                    .translate(-originX, -originY)
+                    .multiply(baseTransform);
             },
         });
 
