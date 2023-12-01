@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import GolCanvas from '@/components/GolCanvas.vue';
 import { makeGolImpl } from '@/lib/gol';
+import { onUnmounted } from 'vue';
 
 const impl = makeGolImpl();
+impl.setCell(0,-1,true);
+impl.setCell(0,0,true);
+impl.setCell(0,1,true);
+
+const interval = setInterval(() => impl.tick(1), 1000);
+onUnmounted(() => clearInterval(interval));
 </script>
 
 <template>

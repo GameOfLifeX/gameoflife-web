@@ -92,6 +92,7 @@ export const twoFingers = (
 
         const { dx, dy } = normalizeWheelEvent(event);
 
+        console.log("wheel gesture =", gesture);
         if (!gesture) {
             gesture = {
                 scale: 1,
@@ -115,15 +116,18 @@ export const twoFingers = (
         }
 
         if (timer) {
-            window.clearTimeout(timer);
+            clearTimeout(timer);
+            console.log("Cleared timer", timer);
         }
 
-        timer = window.setTimeout(() => {
+        timer = setTimeout(() => {
+            console.log("timer gesture =", gesture);
             if (gesture) {
                 onGestureEnd?.(gesture);
                 gesture = undefined;
             }
         }, 20);
+        console.log("Created timer",timer);
     };
 
     let initialTouches: TouchList;
@@ -185,6 +189,7 @@ export const twoFingers = (
                 }
                 startGesture(e);
             }
+            console.log("Touch drag gesture.");
             gesture = {
                 scale: 1,
                 rotation: 0,
@@ -241,6 +246,7 @@ export const twoFingers = (
                 },
                 rotation: 0,
             };
+            console.log("Drag gesture", gesture);
             onGestureChange?.(gesture);
 
             e.preventDefault();
@@ -251,6 +257,7 @@ export const twoFingers = (
         function handleMouseUp(e: MouseEvent): void {
             window.removeEventListener("mousemove", handleMouseMove, { capture: true });
             window.removeEventListener("mouseup", handleMouseUp, { capture: true });
+            console.log("Drag gesture end", gesture);
             if (gesture != null) {
                 onGestureEnd?.(gesture);
                 gesture = undefined;
@@ -269,6 +276,7 @@ export const twoFingers = (
             },
             rotation: 0,
         };
+        console.log("Start drag", gesture);
         onGestureStart?.(gesture);
 
         window.addEventListener("mousemove", handleMouseMove, { capture: true });

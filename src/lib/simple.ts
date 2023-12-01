@@ -55,7 +55,7 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 					if (y === this._minY
 					|| y === this._maxY) {
 						let hasAny = false;
-						for (let checkX = this._minX; y <= this._maxX; x++) {
+						for (let checkX = this._minX; x <= this._maxX; x++) {
 							hasAny ||= checkX !== x && this.getCell(checkX, y);
 						}
 						if (!hasAny) {
@@ -70,16 +70,19 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 			}
 			this.field.delete(this.mapCoordinate(x,y));
 		}
+        console.log("minX =", this._minX, "maxX =", this._maxX, "minY =", this._minY, "maxY", this._maxY);
 
 		if (insideTick === true) {
 			this.hasUpdated();
 		}
 	}
 	tick(timesteps: number): void {
+        const start = performance.now();
 		for (let i = 0; i < timesteps; i++) {
 			let delayed: (() => void)[] = [];
 			for (let x = this._minX - 1; x <= (this._maxX + 1); x++) {
 				for (let y = this._minY - 1; y <= (this._maxY + 1); y++) {
+                    console.log(`x = ${x}, y = ${y}`);
 					let liveNeighbors = 0;
 					for (let xOffset = -1; xOffset <= 1; xOffset++) {
 						for (let yOffset = -1; yOffset <= 1; yOffset++) {
@@ -109,6 +112,9 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 				i();
 			}
 		}
+        const end = performance.now();
+        const diff = end - start;
+        console.log(`tick performance = ${diff}`);
 
 
 		this.hasUpdated();

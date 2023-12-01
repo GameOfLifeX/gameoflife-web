@@ -16,7 +16,7 @@ const props = defineProps<{
     impl: GameOfLifeImplementation,
 }>();
 
-const aliveColor = "#FFFFFF";
+const aliveColor = "#000000";
 const deadColor = "#FFFFFF";
 
 const context = ref<CanvasRenderingContext2D | null>(null);
@@ -25,7 +25,6 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 const canvasWrapperRef = ref<HTMLDivElement | null>(null);
 
 let transform = ref(new DOMMatrix());
-let baseTransform = new DOMMatrix();
 
 function draw(ctx: CanvasRenderingContext2D): void {
 
@@ -38,6 +37,10 @@ function draw(ctx: CanvasRenderingContext2D): void {
     // Prepare the context.
     ctx.reset();
     ctx.clearRect(0,0,width,height);
+    ctx.save();
+    ctx.fillStyle = deadColor;
+    ctx.fillRect(0,0,width,height);
+    ctx.restore();
 
     const inverse = transformValue.inverse();
     const cornerPoint1 = inverse.transformPoint(new DOMPoint(0, 0));
@@ -59,11 +62,12 @@ function draw(ctx: CanvasRenderingContext2D): void {
     ctx.transform(transformValue.a,transformValue.b,transformValue.c,transformValue.d,transformValue.e,transformValue.f);
 
     ctx.save();
+    ctx.fillStyle = aliveColor;
     for (let x = filledMinX; x <= filledMaxX; x++) {
         for (let y = filledMinY; y <= filledMaxY; y++) {
-            ctx.fillStyle = impl.getCell(x,y) ? aliveColor : deadColor;
-
-            ctx.fillRect(x,y,1,1);
+            if (impl.getCell(x,y)) {
+                ctx.fillRect(x,y,1,1);
+            }
         }
     }
     ctx.restore();
@@ -121,6 +125,7 @@ let resizeObserver = new ResizeObserver(() => {
 });
 
 
+let baseTransform = new DOMMatrix();
 watch([canvasRef, canvasWrapperRef], ([canvasRef, canvasWrapperRef], _, onCleanup) => {
 	if (canvasRef != null && canvasWrapperRef != null) {
         const stop = twoFingers(canvasWrapperRef, {
