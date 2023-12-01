@@ -1,6 +1,6 @@
 <template>
   <div class="overlap-grid">
-    <GolCanvas :impl="impl" @clicked="clicked" style="" />
+    <GolCanvas :impl="impl" @clicked="clicked" />
     <div style="display: flex; flex-direction: row; gap: 1rem; justify-self: start; align-self: start;">
       <button @click="slowDown">
         Slow Down
