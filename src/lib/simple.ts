@@ -70,10 +70,8 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 			}
 			this.field.delete(this.mapCoordinate(x,y));
 		}
-        console.log("minX =", this._minX, "maxX =", this._maxX, "minY =", this._minY, "maxY =", this._maxY);
-        console.log("x =", x, "y =", y, "value =", value);
 
-		if (insideTick === true) {
+		if (insideTick !== true) {
 			this.hasUpdated();
 		}
 	}
@@ -98,7 +96,6 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 
                     const isAlive = this.getCell(x, y);
 
-                    console.log("x =", x, "y =", y, "isAlive =", isAlive, "liveNeighbors =", liveNeighbors);
 
 
                     const xCopy = x;
@@ -106,12 +103,10 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 					if (isAlive) {
 						if (liveNeighbors < 2
 							|| liveNeighbors > 3) {
-                            console.log("Scheduling killing cell. xCopy =", xCopy, "yCopy =", yCopy);
 							delayed.push(() => this.setCell(xCopy,yCopy,false));
 						}
 					} else{
 						if (liveNeighbors === 3) {
-                            console.log("Scheduling resurrecting cell. xCopy =", xCopy, "yCopy =", yCopy);
 							delayed.push(() => this.setCell(xCopy,yCopy,true));
 						}
 					}

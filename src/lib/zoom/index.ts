@@ -221,6 +221,8 @@ export const twoFingers = (
         }
     };
 
+    function mouseMove(e: MouseEvent) {
+    }
 
     function startDrag(e: MouseEvent) {
         if (e.button !== 1 && e.button !== 0) {
@@ -229,6 +231,7 @@ export const twoFingers = (
 
         const initialX = e.clientX;
         const initialY = e.clientY;
+        let started = false;
 
         function handleMouseMove(e: MouseEvent): void {
             const x = e.clientX - initialX;
@@ -246,8 +249,13 @@ export const twoFingers = (
                 },
                 rotation: 0,
             };
-            console.log("Drag gesture", gesture);
-            onGestureChange?.(gesture);
+            console.log("Drag gesture", gesture, "started =", started);
+            if (started) {
+                onGestureChange?.(gesture);
+            } else {
+                onGestureStart?.(gesture);
+                started = true;
+            }
 
             e.preventDefault();
             e.stopPropagation();
@@ -257,27 +265,26 @@ export const twoFingers = (
         function handleMouseUp(e: MouseEvent): void {
             window.removeEventListener("mousemove", handleMouseMove, { capture: true });
             window.removeEventListener("mouseup", handleMouseUp, { capture: true });
+            if (!started) {
+                return;
+            }
             console.log("Drag gesture end", gesture);
             if (gesture != null) {
                 onGestureEnd?.(gesture);
                 gesture = undefined;
             }
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            window.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+            }, {
+                capture: true,
+                once: true,
+            });
         }
-
-        gesture = {
-            origin: {
-                x: 0,
-                y: 0,
-            },
-            scale: 1,
-            translation: {
-                x: 0,
-                y: 0,
-            },
-            rotation: 0,
-        };
-        console.log("Start drag", gesture);
-        onGestureStart?.(gesture);
 
         window.addEventListener("mousemove", handleMouseMove, { capture: true });
         window.addEventListener("mouseup", handleMouseUp, { capture: true });
@@ -333,6 +340,7 @@ export const twoFingers = (
         container.removeEventListener("wheel", wheelListener);
         container.removeEventListener("touchstart", watchTouches);
         container.removeEventListener("mousedown", startDrag as any);
+        container.removeEventListener("mousemove", mouseMove);
 
         if (typeof window.GestureEvent !== "undefined" && typeof window.TouchEvent === "undefined") {
             container.removeEventListener("gesturestart", handleGestureStart);

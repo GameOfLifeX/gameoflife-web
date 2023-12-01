@@ -2,7 +2,7 @@
   <div>
     <div style="overflow: hidden; touch-action: manipulation; width: 100%; height: 100%;" ref="canvasWrapperRef">
       <div style="width: 0px; height: 0px;">
-        <canvas ref="canvasRef" />
+        <canvas ref="canvasRef" @click="onClick" />
       </div>
     </div>
   </div>
@@ -157,4 +157,21 @@ watch([canvasRef, canvasWrapperRef], ([canvasRef, canvasWrapperRef], _, onCleanu
         context.value = null;
     }
 });
+
+function onClick(a: MouseEvent) {
+    if (canvasRef.value == null) {
+        return;
+    }
+    const rect = canvasRef.value.getBoundingClientRect();
+
+    const inverse = transform.value.inverse();
+    const point = inverse.transformPoint(new DOMPoint(
+        (a.clientX - rect.x) * window.devicePixelRatio,
+        (a.clientY - rect.y) * window.devicePixelRatio,
+    ));
+    const gameX = Math.floor(point.x);
+    const gameY = Math.floor(point.y);
+    const impl = props.impl;
+    impl.setCell(gameX, gameY, !impl.getCell(gameX, gameY));
+}
 </script>
