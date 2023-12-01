@@ -133,12 +133,12 @@ watch([canvasRef, canvasWrapperRef], ([canvasRef, canvasWrapperRef], _, onCleanu
             onGestureStart: () => baseTransform = transform.value,
             onGestureChange: (gesture) => {
                 const boundingRect = canvasRef.getBoundingClientRect();
-                const originX  = gesture.origin.x - boundingRect.x;
-                const originY  = gesture.origin.y - boundingRect.y;
+                const originX  = (gesture.origin.x - boundingRect.x) * window.devicePixelRatio;
+                const originY  = (gesture.origin.y - boundingRect.y) * window.devicePixelRatio;
                 console.log("originX =", originX, "originY =", originY);
                 transform.value = new DOMMatrix()
                     .translate(originX, originY)
-                    .translate(gesture.translation.x, gesture.translation.y)
+                    .translate(gesture.translation.x * window.devicePixelRatio, gesture.translation.y * window.devicePixelRatio)
                     .rotate(gesture.rotation)
                     .scale(gesture.scale)
                     .translate(-originX, -originY)
