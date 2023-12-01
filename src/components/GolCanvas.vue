@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import type { GameOfLifeImplementation } from '@/lib/gol';
 import { twoFingers } from '@/lib/zoom';
-import { ref, triggerRef, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
     impl: GameOfLifeImplementation,

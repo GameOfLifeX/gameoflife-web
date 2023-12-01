@@ -1,4 +1,4 @@
-import { shallowRef, type Ref, onUnmounted } from "vue";
+import { onUnmounted } from "vue";
 import type { GameOfLifeImplementation } from "./gol";
 
 export class SimpleGolImpl implements GameOfLifeImplementation {
@@ -40,7 +40,7 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 					if (x === this._minX
 					|| x === this._maxX) {
 						let hasAny = false;
-						for (let checkY = this._minY; y <= this._maxY; y++) {
+						for (let checkY = this._minY; checkY <= this._maxY; checkY++) {
 							hasAny ||= checkY !== y && this.getCell(x, checkY);
 						}
 						if (!hasAny) {
@@ -55,7 +55,7 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 					if (y === this._minY
 					|| y === this._maxY) {
 						let hasAny = false;
-						for (let checkX = this._minX; x <= this._maxX; x++) {
+						for (let checkX = this._minX; checkX <= this._maxX; checkX++) {
 							hasAny ||= checkX !== x && this.getCell(checkX, y);
 						}
 						if (!hasAny) {
@@ -70,7 +70,8 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 			}
 			this.field.delete(this.mapCoordinate(x,y));
 		}
-        console.log("minX =", this._minX, "maxX =", this._maxX, "minY =", this._minY, "maxY", this._maxY);
+        console.log("minX =", this._minX, "maxX =", this._maxX, "minY =", this._minY, "maxY =", this._maxY);
+        console.log("x =", x, "y =", y, "value =", value);
 
 		if (insideTick === true) {
 			this.hasUpdated();
@@ -82,7 +83,6 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 			let delayed: (() => void)[] = [];
 			for (let x = this._minX - 1; x <= (this._maxX + 1); x++) {
 				for (let y = this._minY - 1; y <= (this._maxY + 1); y++) {
-                    console.log(`x = ${x}, y = ${y}`);
 					let liveNeighbors = 0;
 					for (let xOffset = -1; xOffset <= 1; xOffset++) {
 						for (let yOffset = -1; yOffset <= 1; yOffset++) {
@@ -96,14 +96,23 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 						}
 					}
 
-					if (this.getCell(x, y)) {
+                    const isAlive = this.getCell(x, y);
+
+                    console.log("x =", x, "y =", y, "isAlive =", isAlive, "liveNeighbors =", liveNeighbors);
+
+
+                    const xCopy = x;
+                    const yCopy = y;
+					if (isAlive) {
 						if (liveNeighbors < 2
 							|| liveNeighbors > 3) {
-							delayed.push(() => this.setCell(x,y,false));
+                            console.log("Scheduling killing cell. xCopy =", xCopy, "yCopy =", yCopy);
+							delayed.push(() => this.setCell(xCopy,yCopy,false));
 						}
 					} else{
 						if (liveNeighbors === 3) {
-							delayed.push(() => this.setCell(x,y,true));
+                            console.log("Scheduling resurrecting cell. xCopy =", xCopy, "yCopy =", yCopy);
+							delayed.push(() => this.setCell(xCopy,yCopy,true));
 						}
 					}
 				}

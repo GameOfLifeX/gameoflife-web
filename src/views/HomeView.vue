@@ -5,10 +5,12 @@ import { onUnmounted } from 'vue';
 
 const impl = makeGolImpl();
 impl.setCell(0,-1,true);
-impl.setCell(0,0,true);
-impl.setCell(0,1,true);
+impl.setCell(-1,0,true);
+impl.setCell(1,-1,true);
+impl.setCell(1,0,true);
+impl.setCell(1,1,true);
 
-const interval = setInterval(() => impl.tick(1), 1000);
+const interval = setInterval(() => impl.tick(1), 500);
 onUnmounted(() => clearInterval(interval));
 </script>
 
