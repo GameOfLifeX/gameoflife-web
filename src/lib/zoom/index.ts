@@ -159,7 +159,7 @@ export const twoFingers = (
         if (!(e instanceof TouchEvent)) return;
 
         if (e.touches.length === 2) {
-            if (initialTouches.length === 1) {
+            if (gesture == null || initialTouches.length === 1) {
                 if (gesture != null) {
                     onGestureEnd?.(gesture);
                     gesture = undefined;
@@ -168,6 +168,7 @@ export const twoFingers = (
             }
             const initialMidpoint = midpoint(initialTouches);
             const currentMidpoint = midpoint(e.touches);
+            console.log("Two finger gesture.");
 
             gesture = {
                 scale: e.scale !== undefined ? e.scale : distance(e.touches) / distance(initialTouches),
@@ -178,18 +179,15 @@ export const twoFingers = (
                 },
                 origin: initialMidpoint,
             };
-
-            onGestureChange?.(gesture);
-            e.preventDefault();
         } else if (e.touches.length === 1) {
-            if (initialTouches.length === 2) {
+            if (gesture == null || initialTouches.length === 2) {
                 if (gesture != null) {
                     onGestureEnd?.(gesture);
                     gesture = undefined;
                 }
                 startGesture(e);
             }
-            console.log("Touch drag gesture.");
+            console.log("One finger gesture.");
             gesture = {
                 scale: 1,
                 rotation: 0,
@@ -203,6 +201,8 @@ export const twoFingers = (
                 },
             }
         }
+        onGestureChange?.(gesture);
+        e.preventDefault();
     };
 
     const watchTouches = (e: Event) => {

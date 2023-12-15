@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="overflow: hidden; touch-action: manipulation; width: 100%; height: 100%;" ref="canvasWrapperRef">
+    <div style="overflow: hidden; touch-action: none; width: 100%; height: 100%;" ref="canvasWrapperRef">
       <div style="width: 0px; height: 0px;">
         <canvas ref="canvasRef" @click="onClick" />
       </div>
