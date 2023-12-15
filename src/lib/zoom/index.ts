@@ -221,9 +221,6 @@ export const twoFingers = (
         }
     };
 
-    function mouseMove(e: MouseEvent) {
-    }
-
     function startDrag(e: MouseEvent) {
         if (e.button !== 1 && e.button !== 0) {
             return;
@@ -340,7 +337,6 @@ export const twoFingers = (
         container.removeEventListener("wheel", wheelListener);
         container.removeEventListener("touchstart", watchTouches);
         container.removeEventListener("mousedown", startDrag as any);
-        container.removeEventListener("mousemove", mouseMove);
 
         if (typeof window.GestureEvent !== "undefined" && typeof window.TouchEvent === "undefined") {
             container.removeEventListener("gesturestart", handleGestureStart);
