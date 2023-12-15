@@ -43,6 +43,7 @@ function draw(ctx: CanvasRenderingContext2D): void {
     // ctx.reset();
     ctx.clearRect(0,0,width,height);
     ctx.save();
+    ctx.save();
     ctx.fillStyle = deadColor;
     ctx.fillRect(0,0,width,height);
     ctx.restore();
@@ -82,6 +83,7 @@ function draw(ctx: CanvasRenderingContext2D): void {
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 0.1;
 
+    ctx.beginPath();
     for (let x = minX; x <= maxX; x++) {
         ctx.moveTo(x, minY);
         ctx.lineTo(x, maxY);
@@ -92,8 +94,10 @@ function draw(ctx: CanvasRenderingContext2D): void {
         ctx.lineTo(maxX, y);
     }
     ctx.stroke();
+    ctx.beginPath();
 
-    ctx.restore()
+    ctx.restore();
+    ctx.restore();
 }
 
 let rafId: number | null = null;
