@@ -100,13 +100,17 @@ function draw(ctx: CanvasRenderingContext2D): void {
     ctx.restore();
 }
 
+function drawNow() {
+    if (context.value != null) {
+        draw(context.value);
+    }
+}
+
 let rafId: number | null = null;
 function requestDraw() {
     if (rafId == null) {
         requestAnimationFrame(() => {
-            if (context.value != null) {
-                draw(context.value);
-            }
+            drawNow();
             rafId = null;
         });
 
@@ -130,6 +134,7 @@ let resizeObserver = new ResizeObserver(() => {
         canvasRef.value.height = scaledHeight;
         canvasRef.value.style.width = (scaledWidth / window.devicePixelRatio).toString() + "px";
         canvasRef.value.style.height = (scaledHeight / window.devicePixelRatio).toString() + "px";
+        drawNow();
     }
 });
 
@@ -157,6 +162,8 @@ watch([canvasRef, canvasWrapperRef], ([canvasRef, canvasWrapperRef], _, onCleanu
 
         context.value = canvasRef.getContext("2d");
 		resizeObserver.observe(canvasWrapperRef);
+
+        requestDraw();
 
 		onCleanup(() => {
             resizeObserver.disconnect();
