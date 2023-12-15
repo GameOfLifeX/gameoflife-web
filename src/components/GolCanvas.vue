@@ -39,7 +39,8 @@ function draw(ctx: CanvasRenderingContext2D): void {
     const height = ctx.canvas.width;
 
     // Prepare the context.
-    ctx.reset();
+    // No reset because webkit/safari doesn't properly support it.
+    // ctx.reset();
     ctx.clearRect(0,0,width,height);
     ctx.save();
     ctx.fillStyle = deadColor;
