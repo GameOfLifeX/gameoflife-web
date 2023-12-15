@@ -179,6 +179,8 @@ export const twoFingers = (
                 },
                 origin: initialMidpoint,
             };
+            onGestureChange?.(gesture);
+            e.preventDefault();
         } else if (e.touches.length === 1) {
             if (gesture == null || initialTouches.length === 2) {
                 if (gesture != null) {
@@ -200,9 +202,9 @@ export const twoFingers = (
                     y: e.touches[0].clientY - initialTouches[0].clientY,
                 },
             }
+            onGestureChange?.(gesture);
+            e.preventDefault();
         }
-        onGestureChange?.(gesture);
-        e.preventDefault();
     };
 
     const watchTouches = (e: Event) => {
