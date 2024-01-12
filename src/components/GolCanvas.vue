@@ -8,7 +8,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { GameOfLifeImplementation } from '@/lib/gol';
+import { PixelType, type GameOfLifeImplementation } from '@/lib/gol';
 import { twoFingers } from '@/lib/zoom';
 import { ref, watch } from 'vue';
 
@@ -20,15 +20,18 @@ const emit = defineEmits<{
     (e: "clicked", point: { x: number, y: number }): void;
 }>();
 
-const aliveColor = "#000000";
-const deadColor = "#FFFFFF";
-
 const context = ref<CanvasRenderingContext2D | null>(null);
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const canvasWrapperRef = ref<HTMLDivElement | null>(null);
 
 let transform = ref(new DOMMatrix());
+
+const pixelTypeColors: Record<PixelType, string> = {
+    [PixelType.Dead]: "#FFFFFF",
+    [PixelType.Npc]: "#000000",
+    [PixelType.Player]: "#FF0000",
+};
 
 function draw(ctx: CanvasRenderingContext2D): void {
 
@@ -44,7 +47,7 @@ function draw(ctx: CanvasRenderingContext2D): void {
     ctx.clearRect(0,0,width,height);
     ctx.save();
     ctx.save();
-    ctx.fillStyle = deadColor;
+    ctx.fillStyle = pixelTypeColors[PixelType.Dead];
     ctx.fillRect(0,0,width,height);
     ctx.restore();
 
@@ -68,10 +71,11 @@ function draw(ctx: CanvasRenderingContext2D): void {
     ctx.transform(transformValue.a,transformValue.b,transformValue.c,transformValue.d,transformValue.e,transformValue.f);
 
     ctx.save();
-    ctx.fillStyle = aliveColor;
     for (let x = filledMinX; x <= filledMaxX; x++) {
         for (let y = filledMinY; y <= filledMaxY; y++) {
-            if (impl.getCell(x,y)) {
+            const pixelType = impl.getCell(x, y);
+            if (pixelType != PixelType.Dead) {
+                ctx.fillStyle = pixelTypeColors[pixelType];
                 ctx.fillRect(x,y,1,1);
             }
         }
