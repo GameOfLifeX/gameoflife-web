@@ -39,7 +39,8 @@ impl.setCell(0, 1, PixelType.Npc);
       ></button>
     </div>
     <div class="offcanvas-body">
-      <p>Try scrolling the rest of the page to see this option in action.</p>
+      <p>Noel's Game of Life ist ein zellularer Automat, der den Regeln von Conway's Game of Life folgt, bei dem sich die Zellen auf einem Gitter über Generationen hinweg auf der Grundlage ihrer Nachbarzellen entwickeln.
+         Noels Version führt jedoch zusätzliche Elemente und Mechanismen ein, um eine einzigartige Wendung zu schaffen, die die Komplexität und Dynamik dieser fesselnden Simulation erhöht.</p>
       <h2 id="spiel-inhalt">Spiel Inhalt</h2>
       <p>Regeln:</p>
       <ul>
