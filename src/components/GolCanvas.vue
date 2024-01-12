@@ -39,7 +39,7 @@ function draw(ctx: CanvasRenderingContext2D): void {
     const impl = props.impl;
 
     const width = ctx.canvas.width;
-    const height = ctx.canvas.width;
+    const height = ctx.canvas.height;
 
     // Prepare the context.
     // No reset because webkit/safari doesn't properly support it.

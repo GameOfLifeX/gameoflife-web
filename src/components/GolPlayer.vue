@@ -1,7 +1,10 @@
 <template>
   <div class="overlap-grid">
     <GolCanvas :impl="impl" @clicked="clicked" />
-    <div style="display: flex; flex-direction: row; gap: 1rem; justify-self: start; align-self: start;">
+    <div style="display: flex; flex-direction: row; gap: 1rem; justify-self: start; align-self: start;" class="p-2">
+      <button class="btn btn-secondary" type="button" data-bs-target="#global-sidebar" aria-controls="global-sidebar" data-bs-toggle="offcanvas">
+        <i class="bi bi-list"></i>
+      </button>
       <button @click="slowDown">
         Slow Down
       </button>
