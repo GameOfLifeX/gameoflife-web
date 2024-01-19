@@ -82,7 +82,7 @@ function draw(ctx: CanvasRenderingContext2D): void {
     }
     ctx.restore();
 
-    ctx.save()
+    ctx.save();
 
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 0.1;
@@ -129,11 +129,19 @@ props.impl.useUpdated(() => requestDraw());
 
 
 
+let prevCenter = new DOMPoint();
 let resizeObserver = new ResizeObserver(() => {
     if (canvasRef.value != null && canvasWrapperRef.value != null) {
         const a = canvasWrapperRef.value.getBoundingClientRect();
         const scaledWidth = Math.ceil(a.width * window.devicePixelRatio);
         const scaledHeight = Math.ceil(a.height * window.devicePixelRatio);
+
+        const newCenter = new DOMPoint(scaledWidth / 2, scaledHeight / 2);
+        transform.value = new DOMMatrix()
+        .translate(newCenter.x - prevCenter.x, newCenter.y - prevCenter.y)
+        .multiply(transform.value);
+        prevCenter = newCenter;
+
         canvasRef.value.width = scaledWidth;
         canvasRef.value.height = scaledHeight;
         canvasRef.value.style.width = (scaledWidth / window.devicePixelRatio).toString() + "px";
