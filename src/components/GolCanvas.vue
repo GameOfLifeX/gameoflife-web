@@ -25,7 +25,7 @@ const context = ref<CanvasRenderingContext2D | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const canvasWrapperRef = ref<HTMLDivElement | null>(null);
 
-let transform = ref(new DOMMatrix());
+let transform = ref(new DOMMatrix().scale(15, 15));  // Initialer Zoom
 
 const pixelTypeColors: Record<PixelType, string> = {
     [PixelType.Dead]: "#FFFFFF",
