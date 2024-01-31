@@ -1,25 +1,29 @@
 <template>
   <div class="overlap-grid">
-    <GolCanvas :impl="impl" @clicked="clicked" />
+    <GolCanvas :impl="impl.impl" @clicked="clicked" />
     <div style="display: flex; flex-direction: row; gap: 1rem; justify-self: start; align-self: start;" class="p-2">
       <button class="btn btn-secondary" type="button" data-bs-target="#global-sidebar" aria-controls="global-sidebar" data-bs-toggle="offcanvas">
         <i class="bi bi-list"></i>
       </button>
-      <button @click="slowDown">
+      <button class="btn btn-secondary" @click="slowDown">
         Slow Down
       </button>
-      <button @click="pausePlay">
+      <button class="btn btn-secondary" @click="pausePlay" :disabled="props.impl.gameover">
         Pause / Play
       </button>
-      <button @click="speedUp">
+      <button class="btn btn-secondary" @click="speedUp">
         Speed Up
       </button>
-      <button @click="placeNpc">
+      <div>Lives: {{ props.impl.lives }}</div>
+      <div>Pixels: {{ props.impl.availablePixels }}</div>
+
+
+      <!--<button class="btn btn-secondary" @click="placeNpc">
         Place Npc
       </button>
-      <button @click="placePlayer">
+      <button class="btn btn-secondary" @click="placePlayer">
         Place Player
-      </button>
+      </button>-->
     </div>
   </div>
 </template>
@@ -36,17 +40,17 @@
 <script setup lang="ts">
 import { PixelType, type GameOfLifeImplementation } from "@/lib/gol";
 import GolCanvas from "./GolCanvas.vue";
+import { GameState } from "@/lib/gamestate";
 import { computed, ref, watch } from "vue";
 
 const props = defineProps<{
-    impl: GameOfLifeImplementation,
+    impl: GameState,
 }>();
 
-const currentPixelType = ref(PixelType.Npc);
+const currentPixelType = ref(PixelType.Player);
 
 function clicked(point: { x: number, y: number }) {
-    const pixelType = props.impl.getCell(point.x, point.y);
-    props.impl.setCell(point.x, point.y, pixelType == PixelType.Dead ? currentPixelType.value : PixelType.Dead);
+    props.impl.placePixel(point.x,point.y);
 }
 
 function placeNpc() {
@@ -62,7 +66,7 @@ const maxUpdateFrequency = 20;
 const speed = ref(1);
 const paused = ref(false);
 
-const actualSpeed = computed(() => paused.value ? 0 : speed.value);
+const actualSpeed = computed(() => props.impl.gameover || paused.value ? 0 : speed.value);
 
 watch(actualSpeed, (speed, _, onCleanup) => {
     if (speed <= 0) {
@@ -76,7 +80,7 @@ watch(actualSpeed, (speed, _, onCleanup) => {
     console.log("interval =", interval, "gameOfLifeTicksPerVisibleTick =", gameOfLifeTicksPerVisibleTick, "speed =", speed);
 
     const token = setInterval(() => {
-        props.impl.tick(gameOfLifeTicksPerVisibleTick);
+        props.impl.impl.tick(gameOfLifeTicksPerVisibleTick);
     }, interval * 1000);
 
     onCleanup(() => clearInterval(token));
@@ -89,13 +93,18 @@ function slowDown() {
 }
 
 function pausePlay() {
-    paused.value = !paused.value;
+    if (!props.impl.gameover) {
+        paused.value = !paused.value;
+    }
 }
 
 function speedUp() {
     speed.value = speed.value * 2;
 }
 
+props.impl.impl.useUpdated(a => {
+    paused.value ||= a;
+});
 
 
 

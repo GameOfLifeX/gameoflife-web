@@ -7,9 +7,15 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 	private _minY: number = 0;
 	private _maxY: number = 0;
 	private field: Map<bigint, PixelType> = new Map();
-	private updatedCallbacks: Set<() => void> = new Set();
+	private updatedCallbacks: Set<(interruped: boolean) => void> = new Set();
+    private checkCallback: () => boolean = () => false;
 	public constructor() {
 	}
+
+    setCheckCallback(a: () => boolean): void {
+        this.checkCallback = a;
+    }
+
 	private mapCoordinate(x: number, y: number): bigint {
 		return (BigInt((x | 0) >>> 0) << 32n) | BigInt((y | 0) >>> 0)
 	}
@@ -72,12 +78,13 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
         }
 
         if (insideTick !== true) {
-            this.hasUpdated();
+            this.hasUpdated(false);
         }
     }
 
     tick(timesteps: number): void {
         const start = performance.now();
+        let interruped = false;
         for (let i = 0; i < timesteps; i++) {
             let delayed: (() => void)[] = [];
             for (let x = this._minX - 1; x <= (this._maxX + 1); x++) {
@@ -104,6 +111,7 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
                     ? liveNeighbors >= 2 && liveNeighbors <= 3
                     : liveNeighbors === 3;
 
+                    // Make the new pixel be an npc pixel if any neighboring pixel is an npc pixel.
                     const newState = isAlive
                                    ? ((hasNpc || currentState === PixelType.Npc)
                                     ? PixelType.Npc
@@ -120,13 +128,18 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 			for (const i of delayed) {
 				i();
 			}
+
+            if (this.checkCallback()) {
+                interruped = true;
+                break;
+            }
 		}
         const end = performance.now();
         const diff = end - start;
         console.log(`tick performance = ${diff}`);
 
 
-		this.hasUpdated();
+		this.hasUpdated(interruped);
 	}
 	public get minX() {
 		return this._minX;
@@ -140,14 +153,14 @@ export class SimpleGolImpl implements GameOfLifeImplementation {
 	public get maxY() {
 		return this._maxY;
 	}
-	public useUpdated(callback: () => void) {
+	public useUpdated(callback: (interruped: boolean) => void) {
 		this.updatedCallbacks.add(callback);
 		onUnmounted(() => this.updatedCallbacks.delete(callback));
 	}
 
-	private hasUpdated() {
+	private hasUpdated(interrupted: boolean) {
 		for (const callback of this.updatedCallbacks) {
-			callback();
+			callback(interrupted);
 		}
 	}
 }

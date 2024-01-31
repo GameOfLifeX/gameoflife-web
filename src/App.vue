@@ -1,23 +1,37 @@
 <script setup lang="ts">
 import GolPlayer from "@/components/GolPlayer.vue";
 import { PixelType, makeGolImpl } from "@/lib/gol";
+import { computed, ref, watch } from "vue";
+import { useAsyncState } from "@vueuse/core";
+import { levels, loadLevel } from "./lib/levels";
 
-const impl = makeGolImpl();
-// Glider
-/*impl.setCell(0,-1,true);
-impl.setCell(-1,0,true);
-impl.setCell(1,-1,true);
-impl.setCell(1,0,true);
-impl.setCell(1,1,true);*/
-// Blinker
-impl.setCell(0, -1, PixelType.Npc);
-impl.setCell(0, 0, PixelType.Npc);
-impl.setCell(0, 1, PixelType.Npc);
+const levelIndex = ref(+(window.localStorage.getItem("level") ?? "0"));
+
+const currentLevel = computed(() => levels[levelIndex.value]);
+const loadedLevel = useAsyncState(() => loadLevel(currentLevel.value), null, {
+    shallow: false,
+});
+watch(currentLevel, () => loadedLevel.execute());
+
+watch(() => loadedLevel.state.value?.isWon ?? false, (a) => {
+    if (a) {
+        if (levelIndex.value < levels.length){
+            levelIndex.value++;
+        }
+    }
+});
+
+watch(levelIndex, i => window.localStorage.setItem("level", ""+i));
 </script>
 
 <template>
   <div class="main-div">
-    <GolPlayer class="w-100 h-100" :impl="impl" />
+    <GolPlayer class="w-100 h-100" :impl="loadedLevel.state.value" v-if="loadedLevel.isReady && loadedLevel.state.value != null" />
+    <div class="w-100 h-100">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
   </div>
   <div
     class="offcanvas offcanvas-start"
@@ -64,6 +78,14 @@ impl.setCell(0, 1, PixelType.Npc);
           </p>
         </li>
       </ul>
+      <section>
+        <h2>Levels</h2>
+        <ul>
+          <li v-for="(level, index) in levels" :key="index" :class="index === levelIndex ? 'fw-bold' : ''">
+            Level {{ index }}
+          </li>
+        </ul>
+      </section>
     </div>
   </div>
 </template>

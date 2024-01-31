@@ -8,6 +8,8 @@ export enum PixelType {
 }
 
 export interface GameOfLifeImplementation {
+    setCheckCallback(a: () => boolean): void;
+
 	getCell(x: number, y: number): PixelType;
 	setCell(x: number, y: number, value: PixelType): void;
 
@@ -18,7 +20,7 @@ export interface GameOfLifeImplementation {
 	readonly minY: number;
 	readonly maxY: number;
 
-	useUpdated(callback: () => void): void;
+	useUpdated(callback: (interruped: boolean) => void): void;
 }
 
 export const makeGolImpl = () => markRaw(new SimpleGolImpl());
