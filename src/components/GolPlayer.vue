@@ -1,5 +1,6 @@
 <template>
   <div class="overlap-grid">
+    <img src="../assets/Background.jpg" class="w-100 h-100"/>
     <GolCanvas :impl="impl.impl" @clicked="clicked" :highlightedZones="highlightedZones" />
     <div style="display: flex; flex-direction: row; gap: 1rem; justify-self: start; align-self: start;" class="p-2">
       <button class="btn btn-secondary" type="button" data-bs-target="#global-sidebar" aria-controls="global-sidebar" data-bs-toggle="offcanvas">

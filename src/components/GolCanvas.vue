@@ -34,9 +34,10 @@ const canvasWrapperRef = ref<HTMLDivElement | null>(null);
 
 let transform = ref(new DOMMatrix().scale(15, 15));  // Initialer Zoom
 
+const gridColor = "#AAAA00";
 const pixelTypeColors: Record<PixelType, string> = {
-    [PixelType.Dead]: "#FFFFFF",
-    [PixelType.Npc]: "#000000",
+    [PixelType.Dead]: "#FFFFFF00",
+    [PixelType.Npc]: "#FFFF00",
     [PixelType.Player]: "#FF0000",
 };
 
@@ -91,7 +92,7 @@ function draw(ctx: CanvasRenderingContext2D): void {
 
     ctx.save();
 
-    ctx.strokeStyle = "#000000";
+    ctx.strokeStyle = gridColor;
     ctx.lineWidth = 0.1;
 
     ctx.beginPath();
