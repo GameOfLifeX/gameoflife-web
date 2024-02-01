@@ -1,6 +1,6 @@
 <template>
   <div class="overlap-grid">
-    <GolCanvas :impl="impl.impl" @clicked="clicked" />
+    <GolCanvas :impl="impl.impl" @clicked="clicked" :highlightedZones="highlightedZones" />
     <div style="display: flex; flex-direction: row; gap: 1rem; justify-self: start; align-self: start;" class="p-2">
       <button class="btn btn-secondary" type="button" data-bs-target="#global-sidebar" aria-controls="global-sidebar" data-bs-toggle="offcanvas">
         <i class="bi bi-list"></i>
@@ -104,6 +104,16 @@ function speedUp() {
 
 props.impl.impl.useUpdated(a => {
     paused.value ||= a;
+});
+
+const highlightedZones = computed(() => {
+    return props.impl.captureZones.map(zone => ({
+        x1: zone.x1,
+        y1: zone.y1,
+        x2: zone.x2,
+        y2: zone.y2,
+        color: "#ff0000",
+    }));
 });
 
 
