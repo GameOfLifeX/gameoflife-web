@@ -9,6 +9,9 @@
       <button class="btn btn-secondary" @click="slowDown">
         Slow Down
       </button>
+      <button class="btn btn-secondary" @click="emit('reset')">
+        Reset
+      </button>
       <button class="btn btn-secondary" @click="pausePlay" :disabled="props.impl.gameover">
         <template v-if="paused">
           <img src="../assets/Play_Icon.png" style="display: inline-block; vertical-align: -.125em; height: 1em; width: 1em;" />
@@ -57,6 +60,10 @@ import { computed, ref, watch } from "vue";
 
 const props = defineProps<{
     impl: GameState,
+}>();
+
+const emit = defineEmits<{
+    (e: "reset"): void;
 }>();
 
 const currentPixelType = ref(PixelType.Player);

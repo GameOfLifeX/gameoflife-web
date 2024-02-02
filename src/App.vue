@@ -29,11 +29,15 @@ const modalElement = ref<HTMLElement | null>(null);
 function goToNext() {
     levelIndex.value = (levelIndex.value + 1) % levels.length;
 }
+
+function reset() {
+    loadedLevel.execute();
+}
 </script>
 
 <template>
   <div class="main-div">
-    <GolPlayer class="w-100 h-100" :impl="loadedLevel.state.value" v-if="loadedLevel.isReady && loadedLevel.state.value != null" />
+    <GolPlayer class="w-100 h-100" :impl="loadedLevel.state.value" v-if="loadedLevel.isReady && loadedLevel.state.value != null" @reset="reset" />
     <div class="w-100 h-100">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
