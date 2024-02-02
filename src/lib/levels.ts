@@ -90,10 +90,10 @@ export const levels: Level[] = [
     zones: [{
         requiredPlayerPixels: 5,
         captureAction: a => a.win(),
-        x1: 50 - 50,
-        y1: 53 - 50,
-        x2: 78 - 50,
-        y2: 79 - 50,
+        x1: 94 - 64,
+        y1: 27 - 64,
+        x2: 109 - 64,
+        y2: 42 - 64,
     }],
     },
 ];
