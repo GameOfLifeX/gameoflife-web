@@ -1,6 +1,7 @@
 import { type Zone, GameState } from "./gamestate";
 import { PixelType } from "./gol";
 import level1Url from "./levels/level1.png";
+import level2Url from "./levels/level2.png";
 
 export interface Level {
     zones: Zone[];
@@ -79,5 +80,20 @@ export const levels: Level[] = [
             x2: 66 - 50,
             y2: 69 - 50,
         }],
+    },
+    {
+    centerX: 64,
+    centerY: 64,
+    initialPixels: 14,
+    lives: 5,
+    initialState: level2Url,
+    zones: [{
+        requiredPlayerPixels: 5,
+        captureAction: a => a.win(),
+        x1: 50 - 50,
+        y1: 53 - 50,
+        x2: 78 - 50,
+        y2: 79 - 50,
+    }],
     },
 ];
