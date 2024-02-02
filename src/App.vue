@@ -116,9 +116,9 @@ function reset() {
           </p>
         </li>
         <li>
-<p>
-Hier zum Feedback bogen: https://forms.gle/38CiWwnc5SLYohQV6
-</p>
+<a href=""https://forms.gle/38CiWwnc5SLYohQV6>
+Clicke Hier zum Feedback bogen!
+</a>
         </li>
       </ul>
       <section>
