@@ -115,6 +115,11 @@ function reset() {
             wird bevölkert.
           </p>
         </li>
+        <li>
+<p>
+Hier zum Feedback bogen: https://forms.gle/38CiWwnc5SLYohQV6
+</p>
+        </li>
       </ul>
       <section>
         <h2>Levels</h2>
