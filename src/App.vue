@@ -4,6 +4,7 @@ import { PixelType, makeGolImpl } from "@/lib/gol";
 import { computed, ref, watch } from "vue";
 import { useAsyncState } from "@vueuse/core";
 import { levels, loadLevel } from "./lib/levels";
+import { Modal } from "bootstrap";
 
 const levelIndex = ref(+(window.localStorage.getItem("level") ?? "0"));
 
@@ -13,15 +14,21 @@ const loadedLevel = useAsyncState(() => loadLevel(currentLevel.value), null, {
 });
 watch(currentLevel, () => loadedLevel.execute());
 
+const isLastLevel = computed(() => levelIndex.value >= (levels.length - 1));
+
 watch(() => loadedLevel.state.value?.isWon ?? false, (a) => {
     if (a) {
-        if (levelIndex.value < levels.length){
-            levelIndex.value++;
-        }
+        Modal.getOrCreateInstance(modalElement.value!).show();
     }
 });
 
 watch(levelIndex, i => window.localStorage.setItem("level", ""+i));
+
+const modalElement = ref<HTMLElement | null>(null);
+
+function goToNext() {
+    levelIndex.value = (levelIndex.value + 1) % levels.length;
+}
 </script>
 
 <template>
@@ -30,6 +37,33 @@ watch(levelIndex, i => window.localStorage.setItem("level", ""+i));
     <div class="w-100 h-100">
       <div class="spinner-border" role="status">
         <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" ref="modalElement" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Victory!!!!</h1>
+        </div>
+        <div class="modal-body">
+          <template v-if="isLastLevel">
+            You have won the game.
+          </template>
+          <template v-else>
+            You have won this level.
+          </template>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="goToNext">
+            <template v-if="isLastLevel">
+              Restart the game at the first level
+            </template>
+            <template v-else>
+              Go to the next level
+            </template>
+          </button>
+        </div>
       </div>
     </div>
   </div>
