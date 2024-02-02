@@ -1,6 +1,7 @@
 <template>
   <div class="overlap-grid">
-    <GolCanvas :impl="impl.impl" @clicked="clicked" />
+    <img src="../assets/Background.jpg" class="w-100 h-100" style="object-fit: cover;" />
+    <GolCanvas :impl="impl.impl" @clicked="clicked" :highlightedZones="highlightedZones" />
     <div style="display: flex; flex-direction: row; gap: 1rem; justify-self: start; align-self: start;" class="p-2">
       <button class="btn btn-secondary" type="button" data-bs-target="#global-sidebar" aria-controls="global-sidebar" data-bs-toggle="offcanvas">
         <i class="bi bi-list"></i>
@@ -9,15 +10,26 @@
         Slow Down
       </button>
       <button class="btn btn-secondary" @click="pausePlay" :disabled="props.impl.gameover">
-        Pause / Play
+        <template v-if="paused">
+          <img src="../assets/Play_Icon.png" style="display: inline-block; vertical-align: -.125em; height: 1em; width: 1em;" />
+          Play
+        </template>
+        <template v-else>
+          <img src="../assets/Pause_Icon.png" style="display: inline-block; vertical-align: -.125em; height: 1em; width: 1em;" />
+          Pause
+        </template>
       </button>
       <button class="btn btn-secondary" @click="speedUp">
         Speed Up
       </button>
-      <div>Lives: {{ props.impl.lives }}</div>
-      <div>Pixels: {{ props.impl.availablePixels }}</div>
-
-
+      <div class="overlap-grid" style="height: calc(1.5em + 0.75rem); width: calc(1.5em + 0.75rem);">
+        <img src="../assets/Herz_Icon.png" class="h-100 w-100" />
+        <div class="align-self-center text-white" style="justify-self: center;">{{ props.impl.lives }}</div>
+      </div>
+      <div class="overlap-grid" style="height: calc(1.5em + 0.75rem); width: calc(1.5em + 0.75rem);">
+        <img src="../assets/Block_Icon.png" class="h-100 w-100" />
+        <div class="align-self-center text-white" style="justify-self: center;">{{ props.impl.availablePixels }}</div>
+      </div>
       <!--<button class="btn btn-secondary" @click="placeNpc">
         Place Npc
       </button>
@@ -104,6 +116,16 @@ function speedUp() {
 
 props.impl.impl.useUpdated(a => {
     paused.value ||= a;
+});
+
+const highlightedZones = computed(() => {
+    return props.impl.captureZones.map(zone => ({
+        x1: zone.x1,
+        y1: zone.y1,
+        x2: zone.x2,
+        y2: zone.y2,
+        color: "#ff0000",
+    }));
 });
 
 

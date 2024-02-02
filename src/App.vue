@@ -82,7 +82,7 @@ watch(levelIndex, i => window.localStorage.setItem("level", ""+i));
         <h2>Levels</h2>
         <ul>
           <li v-for="(level, index) in levels" :key="index" :class="index === levelIndex ? 'fw-bold' : ''">
-            Level {{ index }}
+            Level {{ index + 1 }}
           </li>
         </ul>
       </section>

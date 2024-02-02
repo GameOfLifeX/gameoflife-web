@@ -14,6 +14,13 @@ import { ref, watch } from 'vue';
 
 const props = defineProps<{
     impl: GameOfLifeImplementation,
+    highlightedZones: {
+        x1: number,
+        y1: number,
+        x2: number,
+        y2: number,
+        color: string,
+    }[],
 }>();
 
 const emit = defineEmits<{
@@ -27,9 +34,10 @@ const canvasWrapperRef = ref<HTMLDivElement | null>(null);
 
 let transform = ref(new DOMMatrix().scale(15, 15));  // Initialer Zoom
 
+const gridColor = "#AAAA00";
 const pixelTypeColors: Record<PixelType, string> = {
-    [PixelType.Dead]: "#FFFFFF",
-    [PixelType.Npc]: "#000000",
+    [PixelType.Dead]: "#FFFFFF00",
+    [PixelType.Npc]: "#FFFF00",
     [PixelType.Player]: "#FF0000",
 };
 
@@ -84,7 +92,7 @@ function draw(ctx: CanvasRenderingContext2D): void {
 
     ctx.save();
 
-    ctx.strokeStyle = "#000000";
+    ctx.strokeStyle = gridColor;
     ctx.lineWidth = 0.1;
 
     ctx.beginPath();
@@ -101,6 +109,15 @@ function draw(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
 
     ctx.restore();
+
+    for (const zone of props.highlightedZones) {
+        ctx.save()
+        ctx.strokeStyle = zone.color;
+        ctx.lineWidth = 0.1;
+        ctx.strokeRect(zone.x1,zone.y1, (zone.x2 - zone.x1) + 1, (zone.y2 - zone.y1) + 1);
+        ctx.restore();
+    }
+
     ctx.restore();
 }
 
@@ -124,6 +141,7 @@ function requestDraw() {
 }
 
 watch([transform], () => requestDraw());
+watch(() => props.highlightedZones, () => requestDraw(), { deep: true });
 
 props.impl.useUpdated(() => requestDraw());
 
